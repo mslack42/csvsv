@@ -1,0 +1,19 @@
+{
+  "name": "csvsv",
+  "version": "0.0.1",
+  "description": "Command-line tool that enables querying of CSV data using vanilla JS",
+  "main": "src/index.js",
+  "type": "module",
+  "keywords": ["csv", "cli"],
+  "author": "mslack42",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "commander": "^9.0.0",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0"
+  },
+  "bin": {
+    "csvsv": "./src/index.js"
+  }
+}
