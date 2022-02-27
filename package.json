@@ -1,12 +1,13 @@
 {
   "name": "csvsv",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Command-line tool that enables querying of CSV data using vanilla JS",
   "main": "src/index.js",
   "type": "module",
   "keywords": ["csv", "cli"],
   "author": "mslack42",
   "license": "MIT",
+  "repository": "github:mslack42/csvsv",
   "dependencies": {
     "chalk": "^5.0.0",
     "commander": "^9.0.0",
