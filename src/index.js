@@ -11,7 +11,7 @@ process.on('uncaughtException', err => {
 
 const program = new Command();
 program
-    .version('0.0.4', '-v, --vers', 'output the current version')
+    .version('0.0.5', '-v, --vers', 'output the current version')
     .description('Tool for programmatically extracting data from a CSV');
 
 program
