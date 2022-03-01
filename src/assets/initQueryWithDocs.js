@@ -31,7 +31,7 @@ const stringFromEpoch = n => (new Date(n)).toDateString();
 // *****
 // This is the object that finally defines what the tool should do
 // Annotations are provided inline
-const query = {
+export const query = {
     inclusions: [
         // This should be a list of functions of the form
         //   f: (datarow) => boolean
@@ -94,5 +94,3 @@ const query = {
         }
     },
 };
-
-module.exports = { query };

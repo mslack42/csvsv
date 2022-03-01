@@ -10,7 +10,7 @@ const not = (dataFn) => {
 }
 const stringFromEpoch = n => (new Date(n)).toDateString();
 
-const query = {
+export const query = {
     inclusions: [
         // (datarow) => true
     ],
@@ -57,5 +57,3 @@ const query = {
         }
     },
 };
-
-module.exports = { query };

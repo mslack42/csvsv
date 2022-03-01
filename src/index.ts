@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { initQuery } from "./init-query/init-query.js";
-import { runQuery } from "./run-query.js";
+import { runQuery } from "./run-query/run-query.js";
 import chalk from "chalk";
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err: Error) => {
     console.error(chalk.red('Something went wrong. This may indicate various things, for example a file system error or a misconfigured query file.'));
     process.exit(1);
   })

@@ -1,25 +1,28 @@
 import { createWriteStream } from 'fs';
 import { join } from 'path';
+import { Aggregate } from '../data/query/aggregation/Aggregate';
+import { Aggregation } from '../data/query/aggregation/Aggregation';
+import ErrorLogger from './error-logger';
 
 export default class Aggregator {
-    aggregates;
-    outputPath;
-    _errorLogger;
+    private aggregates: Aggregate[];
+    private outputPath: string;
+    private errorLogger: ErrorLogger;
 
-    constructor(configuredAggregates, outputDir, errorLogger) {
-        this.aggregates = configuredAggregates.aggregates;
+    constructor(aggregation: Aggregation, outputDir: string, errorLogger: ErrorLogger) {
+        this.aggregates = aggregation.aggregates;
         this.outputPath = join(
             outputDir, 
-            configuredAggregates.outputFile);
-        this._errorLogger = errorLogger;
+            aggregation.outputFile);
+        this.errorLogger = errorLogger;
     }
 
-    applyAggregation = (data) => {
-        this.aggregates.forEach(a => {
+    public applyAggregation = (data: any) => {
+        this.aggregates.forEach((a: Aggregate) => {
             try {
                 a.initial = a.reducer(a.initial, data);
             } catch (e) {
-                this._errorLogger.logError(
+                this.errorLogger.logError(
                     `Exception in aggregation '${a.name}': ${e.message}`,
                     e
                 );
@@ -27,12 +30,12 @@ export default class Aggregator {
         })
     }
 
-    close = () => {
+    public close = () => {
         const writeStream = createWriteStream(
             this.outputPath, 
             { autoClose: true }
         );
-        this.aggregates.forEach(a => {
+        this.aggregates.forEach((a: Aggregate) => {
             let val = a.initial;
             if (a.final) {
                 val = a.final(val);

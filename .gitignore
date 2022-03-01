@@ -1,6 +1,9 @@
 # Dependency directories
 node_modules/
 
+# Local builds
+dist/
+
 # Artifacts from running the tool
 csvsv/
 query.js

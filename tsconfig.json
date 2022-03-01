@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "allowJs": true,
+    "target": "es5",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["./src/assets/**"]
+}

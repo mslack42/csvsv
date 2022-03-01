@@ -1,30 +1,30 @@
 import chalk from 'chalk';
 
 export default class Tracker {
-    includedRows = 0;
-    totalRows = 0;
-    errorCount = 0;
-    outputDirectory;
-    errorLogName;
+    private includedRows: number = 0;
+    public totalRows: number = 0;
+    private errorCount: number = 0;
+    private outputDirectory: string;
+    private errorLogName: string;
 
-    constructor(outputDir, errorLogName) {
+    constructor(outputDir: string, errorLogName: string) {
         this.outputDirectory = outputDir;
         this.errorLogName = errorLogName;
     }
 
-    incrementCounts = included => {
+    public incrementCounts = (included: boolean) => {
         this.totalRows++;
         if (included) this.includedRows++;
     };
 
-    incrementErrorCount = () => {
+    public incrementErrorCount = () => {
         this.errorCount++;
     }
 
-    logSummary = () => {
+    public logSummary = () => {
         let logFn = console.log;
         if (this.errorCount > 0) {
-            logFn = (log) => console.log(chalk.red(log));
+            logFn = (log: string) => console.log(chalk.red(log));
         }
         logFn(`Query Complete`);
         logFn(`Total rows: ${this.totalRows}`);
