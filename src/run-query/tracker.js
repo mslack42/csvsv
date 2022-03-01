@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-export default class Summariser {
+export default class Tracker {
     includedRows = 0;
     totalRows = 0;
     errorCount = 0;
