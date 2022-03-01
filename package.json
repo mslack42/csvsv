@@ -1,6 +1,6 @@
 {
   "name": "csvsv",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Command-line tool that enables querying of CSV data using vanilla JS",
   "main": "src/index.js",
   "type": "module",
