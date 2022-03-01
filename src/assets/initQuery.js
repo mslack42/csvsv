@@ -32,9 +32,10 @@ const query = {
             outputFile: "aggs.txt",
             aggregates: [
                 {
-                    name: "Count",
-                    initial: 0,
-                    reducer: (acc, datarow) => acc + 1
+                    name: "Id Count",
+                    initial: new Set(),
+                    reducer: (acc, datarow) => acc.add(datarow["UniqueIdentifier"]),
+                    final: (acc) => acc.size
                 }
             ]
         }

@@ -62,17 +62,19 @@ const query = {
         // Aggregations allow you to combine row data in various ways
         // Example:
         // {
-        //     outputFile: "aggs.txt",
-        //     aggregates: [
-        //         {
-        //             name: "Sum",
-        //             initial: 0,
-        //             reducer: (acc, datarow) => acc + parseInt(datarow.NumberField)
-        //         }
-        //     ]
+        // outputFile: "aggs.txt",
+        // aggregates: [
+        //     {
+        //         name: "Id Count",
+        //         initial: new Set(),
+        //         reducer: (acc, datarow) => acc.add(datarow["UniqueIdentifier"]),
+        //         final: (acc) => acc.size
+        //     }
+        // ]
         // }
         // The tool will apply the reducer to the initial value and each datarow in turn.
         // The final result will be included in the outputs directory.
+        // An optional 'final' method can be applied to do any post-processing needed after aggregation
     ],
     // Various apsects of the tool are configurable:
     configuration: {
