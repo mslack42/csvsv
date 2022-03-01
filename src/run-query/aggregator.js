@@ -33,7 +33,11 @@ export default class Aggregator {
             { autoClose: true }
         );
         this.aggregates.forEach(a => {
-            writeStream.write(`${a.name}: ${JSON.stringify(a.initial)}`);
+            let val = a.initial;
+            if (a.final) {
+                val = a.final(val);
+            }
+            writeStream.write(`${a.name}: ${JSON.stringify(val)}`);
         });
         writeStream.close();
     }

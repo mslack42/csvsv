@@ -5,13 +5,13 @@ import { runQuery } from "./run-query.js";
 import chalk from "chalk";
 
 process.on('uncaughtException', err => {
-    console.error(chalk.red('Something went wrong. This may indicate various things, for example a file system error or a misconfigured query file.'))
-    process.exit(1)
+    console.error(chalk.red('Something went wrong. This may indicate various things, for example a file system error or a misconfigured query file.'));
+    process.exit(1);
   })
 
 const program = new Command();
 program
-    .version('0.0.1', '-v, --vers', 'output the current version')
+    .version('0.0.4', '-v, --vers', 'output the current version')
     .description('Tool for programmatically extracting data from a CSV');
 
 program
