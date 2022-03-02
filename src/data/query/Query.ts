@@ -1,6 +1,6 @@
-import { Aggregation } from "./aggregation/Aggregation";
-import { Configuration } from "./configuration/Configuration";
-import { Transformation } from "./transformation/Transformation";
+import {Aggregation} from './aggregation/Aggregation';
+import {Configuration} from './configuration/Configuration';
+import {Transformation} from './transformation/Transformation';
 
 export interface Query {
     inclusions: ((data:any) => boolean)[],

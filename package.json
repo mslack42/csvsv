@@ -4,7 +4,9 @@
   "description": "Command-line tool that enables querying of CSV data using vanilla JS",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && rm -r ./dist/assets/ && cp -r ./src/assets/ ./dist/assets/",
+    "prebuild": "npm run applyVersion",
+    "build": "tsc && rm -rf ./dist/assets/ && cp -r ./src/assets/ ./dist/assets/",
+    "applyVersion": "node -p \"'export const TOOL_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/build/version.ts",
     "lint": "eslint . --ext .ts",
     "start": "node dist/index.js"
   },

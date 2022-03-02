@@ -1,4 +1,4 @@
-import { Aggregate } from "./Aggregate";
+import {Aggregate} from './Aggregate';
 
 export interface Aggregation {
     outputFile: string,
