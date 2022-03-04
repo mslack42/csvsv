@@ -1,33 +1,88 @@
-import {RunQueryOpts} from '../data/opts/run-query-opts.js';
-import {Aggregation} from '../data/query/aggregation/Aggregation.js';
-import {Query} from '../data/query/Query.js';
-import {Transformation} from '../data/query/transformation/Transformation.js';
+import CliOptions from '../cli-options.js';
+import {Aggregation} from '../data/query/aggregation/aggregation.js';
+import {Query} from '../data/query/query.js';
+import {Transformation} from '../data/query/transformation/transformation.js';
 import Aggregator from './aggregator.js';
-import ErrorLogger from './error-logger.js';
+import ProcessErrorLogger from './process-error-logger.js';
 import Transformer from './transformer.js';
+import {resolve, relative} from 'path';
+import {RunQueryOpts} from '../data/opts/run-query-opts.js';
+import {Configuration} from '../data/query/configuration/configuration.js';
+import {KnownError} from '../errror/known-error.js';
 
 export default class QueryWrapper {
-  public transformers: Transformer[];
-  public aggregators: Aggregator[];
-  private errorLogger: ErrorLogger;
-  public query: Query;
+  private static instance: QueryWrapper;
 
-  constructor(importedQuery: Query) {
-    this.query = importedQuery;
+  public configuration: Configuration;
+  private transformers: Transformer[];
+  private aggregators: Aggregator[];
+  private inclusions: ((data:any) => boolean)[];
+  private exclusions: ((data:any) => boolean)[];
+
+  private constructor(query: Query) {
+    this.initialise(query);
   }
+
+  private initialise = (query: Query) => {
+    try {
+      const opts: RunQueryOpts = CliOptions.getInstance().options;
+      const queryOutput = opts.output;
+
+      this.transformers = query.transformations
+          .map((t: Transformation) => new Transformer(
+              t,
+              queryOutput,
+              query.configuration.csvWriting));
+      this.aggregators = query.aggregations
+          .map((a: Aggregation) => new Aggregator(
+              a,
+              queryOutput));
+
+      this.inclusions = query.inclusions;
+      this.exclusions = query.exclusions;
+      this.configuration = query.configuration;
+    } catch (err) {
+      throw new KnownError('Failed to parse the query - is it correctly formatted?');
+    }
+  };
+
+  public static async getInstance() {
+    if (!QueryWrapper.instance) {
+      const cli = CliOptions.getInstance();
+      const configuredQuery = await this.loadQuery(cli.options.query);
+      QueryWrapper.instance = new QueryWrapper(configuredQuery);
+    }
+    return QueryWrapper.instance;
+  }
+
+  private static loadQuery = async (queryFilepath: string) => {
+    let loadedQueryModule;
+    try {
+      const modulePath: string = resolve(relative(process.cwd(), queryFilepath));
+      loadedQueryModule = await import(modulePath);
+    } catch (err) {
+      throw new KnownError(`Failed to load query data from ${queryFilepath}`);
+    }
+    try {
+      const configuredQuery: Query = loadedQueryModule.query;
+      return configuredQuery;
+    } catch (err) {
+      throw new KnownError('The specified query is incorrectly formatted');
+    }
+  };
 
   public shouldInclude = (data: any) => {
     return this.passesExclusions(data) && this.passesInclusions(data);
   };
 
   private passesInclusions = (data: any) => {
-    for (const f of this.query.inclusions) {
+    for (const f of this.inclusions) {
       try {
         if (!f(data)) {
           return false;
         }
       } catch (e) {
-        this.errorLogger.logError(
+        ProcessErrorLogger.getInstance().logError(
             `Exception in inclusion check '${f}': ${e.message}`,
             e,
         );
@@ -38,13 +93,13 @@ export default class QueryWrapper {
   };
 
   private passesExclusions = (data: any) => {
-    for (const f of this.query.exclusions) {
+    for (const f of this.exclusions) {
       try {
         if (f(data)) {
           return false;
         }
       } catch (e) {
-        this.errorLogger.logError(
+        ProcessErrorLogger.getInstance().logError(
             `Exception in exclusion check '${f}': ${e.message}`,
             e,
         );
@@ -54,19 +109,9 @@ export default class QueryWrapper {
     return true;
   };
 
-  public initialise = (runQueryOpts: RunQueryOpts, errorLogger: ErrorLogger) => {
-    this.transformers = this.query.transformations
-        .map((t: Transformation) => new Transformer(
-            t,
-            runQueryOpts.output,
-            this.query.configuration.csvWriting,
-            errorLogger));
-    this.aggregators = this.query.aggregations
-        .map((a: Aggregation) => new Aggregator(
-            a,
-            runQueryOpts.output,
-            errorLogger));
-    this.errorLogger = errorLogger;
+  public applyQueryToData = (data: any) => {
+    this.transformers.forEach((t: Transformer) => t.applyTransform(data));
+    this.aggregators.forEach((a: Aggregator) => a.applyAggregation(data));
   };
 
   public close = () => {

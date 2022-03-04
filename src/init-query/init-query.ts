@@ -1,7 +1,7 @@
 import {copyFile} from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
-import {InitQueryOpts} from '../data/opts/init-query-opts';
+import {InitQueryOpts} from '../data/opts/init-query-opts.js';
 
 export const initQuery = async (initQueryOpts: InitQueryOpts) => {
   const callback = (err: Error) => {
