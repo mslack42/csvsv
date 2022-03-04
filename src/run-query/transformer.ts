@@ -2,18 +2,18 @@ import {createObjectCsvStringifier} from 'csv-writer';
 import {ObjectCsvStringifier} from 'csv-writer/src/lib/csv-stringifiers/object';
 import {createWriteStream, WriteStream} from 'fs';
 import {join} from 'path';
-import {CsvWriting} from '../data/query/configuration/CsvWriting';
-import {Column} from '../data/query/transformation/Column';
-import {Transformation} from '../data/query/transformation/Transformation';
-import ErrorLogger from './error-logger';
+import {CsvWriting} from '../data/query/configuration/csvWriting.js';
+import {Column} from '../data/query/transformation/column.js';
+import {Transformation} from '../data/query/transformation/transformation.js';
+import {KnownError} from '../errror/known-error.js';
+import ProcessErrorLogger from './process-error-logger.js';
 
 export default class Transformer {
   private csvStringifier: ObjectCsvStringifier;
   private writeStream: WriteStream;
   private transformation: Transformation;
-  private errorLogger: ErrorLogger;
 
-  constructor(transformation: Transformation, outputDir: string, writingConfig: CsvWriting, errorLogger: ErrorLogger) {
+  constructor(transformation: Transformation, outputDir: string, writingConfig: CsvWriting) {
     this.transformation = transformation;
     this.csvStringifier = createObjectCsvStringifier({
       header: this.transformation.columns.map((c: Column) => {
@@ -24,13 +24,16 @@ export default class Transformer {
       }),
       ...writingConfig,
     });
+    const filepath = join(
+        outputDir,
+        this.transformation.outputFile);
     this.writeStream = createWriteStream(
-        join(
-            outputDir,
-            this.transformation.outputFile),
-        {autoClose: true});
+        filepath,
+        {autoClose: true})
+        .on('error', () => {
+          throw new KnownError(`Failed to write output to ${filepath}`);
+        });
     this.writeStream.write(this.csvStringifier.getHeaderString());
-    this.errorLogger = errorLogger;
   }
 
   public close = () => {
@@ -43,7 +46,7 @@ export default class Transformer {
       try {
         output[c.header] = c.cellFunction(data);
       } catch (e) {
-        this.errorLogger.logError(
+        ProcessErrorLogger.getInstance().logError(
             `Exception in transformation column '${c.header}': ${e.message}`,
             e,
         );

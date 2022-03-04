@@ -1,20 +1,23 @@
 #!/usr/bin/env node
-import {Command} from 'commander';
+import {Command, Option} from 'commander';
 import {initQuery} from './init-query/init-query.js';
 import {runQuery} from './run-query/run-query.js';
-import chalk from 'chalk';
 import {TOOL_VERSION} from './build/version.js';
+import ErrorHandler from './error-handler.js';
+
+process.on('unhandledRejection', (err: Error) => {
+  ErrorHandler.getInstance().handleError(err);
+});
 
 process.on('uncaughtException', (err: Error) => {
-  console.error(chalk.red('Something went wrong. '+
-  'This may indicate various things, for example a file system error or a misconfigured query file.'));
-  process.exit(1);
+  ErrorHandler.getInstance().handleError(err);
 });
 
 const program = new Command();
 program
     .version(TOOL_VERSION, '-v, --vers', 'output the current version')
-    .description('Tool for programmatically extracting data from a CSV');
+    .description('Tool for programmatically extracting data from a CSV')
+    .showHelpAfterError(true);
 
 program
     .command('run')
@@ -23,6 +26,7 @@ program
     .option('-o, --output <directory path>', 'output directory', './csvsv')
     .option('-q, --query <filepath>', 'query filepath', './query.js')
     .option('-l, --logs <filename>', 'error log filename', 'error-logs.txt')
+    .addOption(new Option('--with-debug-logging', 'See stack traces').hideHelp())
     .action(runQuery);
 
 program
@@ -30,6 +34,7 @@ program
     .description('Create a template query.json')
     .option('-w, --with-docs', 'flag to include docs in query file', false)
     .option('-n, --name <name>', 'query name', 'query.js')
+    .addOption(new Option('--with-debug-logging', 'See stack traces').hideHelp())
     .action(initQuery);
 
 program.parse();
