@@ -1,6 +1,6 @@
 {
   "name": "csvsv",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Command-line tool that enables querying of CSV data using vanilla JS",
   "main": "dist/index.js",
   "scripts": {
