@@ -1,6 +1,6 @@
 import chalk from 'chalk';
-import CliOptions from './../cli-options.js';
-import {RunQueryOpts} from './../data/opts/run-query-opts.js';
+import CliOptions from './../../cli-options.js';
+import {RunQueryOpts} from './../../data/opts/run-query-opts.js';
 
 export default class Tracker {
   private static instance: Tracker;

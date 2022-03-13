@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import CliOptions from './cli-options.js';
 import {QueryOpts} from './data/opts/query-opts.js';
 import {KnownError} from './errror/known-error.js';
-import QueryWrapper from './run-query/query-wrapper.js';
+import QueryWrapper from './query/run-query/query-wrapper.js';
 
 export default class ErrorHandler {
   private static instance: ErrorHandler;

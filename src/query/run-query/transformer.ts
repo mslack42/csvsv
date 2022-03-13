@@ -2,10 +2,10 @@ import {createObjectCsvStringifier} from 'csv-writer';
 import {ObjectCsvStringifier} from 'csv-writer/src/lib/csv-stringifiers/object';
 import {createWriteStream, WriteStream} from 'fs';
 import {join} from 'path';
-import {CsvWriting} from '../data/query/configuration/csvWriting.js';
-import {Column} from '../data/query/transformation/column.js';
-import {Transformation} from '../data/query/transformation/transformation.js';
-import {KnownError} from '../errror/known-error.js';
+import {CsvWriting} from '../../data/query/configuration/csvWriting.js';
+import {Column} from '../../data/query/transformation/column.js';
+import {Transformation} from '../../data/query/transformation/transformation.js';
+import {KnownError} from '../../errror/known-error.js';
 import ProcessErrorLogger from './process-error-logger.js';
 
 export default class Transformer {

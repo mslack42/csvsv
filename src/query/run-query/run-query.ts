@@ -2,9 +2,9 @@ import {createReadStream, mkdirSync} from 'fs';
 import csv from 'csv-parser';
 import Tracker from './tracker.js';
 import QueryWrapper from './query-wrapper.js';
-import {RunQueryOpts} from '../data/opts/run-query-opts.js';
-import CliOptions from '../cli-options.js';
-import {KnownError} from '../errror/known-error.js';
+import {RunQueryOpts} from '../../data/opts/run-query-opts.js';
+import CliOptions from '../../cli-options.js';
+import {KnownError} from '../../errror/known-error.js';
 
 export const runQuery = async (runQueryOpts: RunQueryOpts) => {
   CliOptions.getInstance().loadOptions(runQueryOpts);
@@ -16,7 +16,7 @@ export const runQuery = async (runQueryOpts: RunQueryOpts) => {
 
   createReadStream(runQueryOpts.data)
       .pipe(csv(readingConf))
-      .on('data', () => applyQuery)
+      .on('data', applyQuery(query))
       .on('end', () => {
         query.close();
         Tracker.getInstance().logSummary();
@@ -35,9 +35,8 @@ const prepareOutputDirectory = () => {
   }
 };
 
-const applyQuery = async () => {
-  return async (data: any) => {
-    const query = await QueryWrapper.getInstance();
+const applyQuery = (query: QueryWrapper) => {
+  return (data: any) => {
     const shouldBeIncluded = query.shouldInclude(data);
     Tracker.getInstance().incrementCounts(shouldBeIncluded);
     if (shouldBeIncluded) {

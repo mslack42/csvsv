@@ -1,8 +1,8 @@
 import {createWriteStream} from 'fs';
 import {join} from 'path';
-import {Aggregate} from '../data/query/aggregation/aggregate.js';
-import {Aggregation} from '../data/query/aggregation/aggregation.js';
-import {KnownError} from '../errror/known-error.js';
+import {Aggregate} from '../../data/query/aggregation/aggregate.js';
+import {Aggregation} from '../../data/query/aggregation/aggregation.js';
+import {KnownError} from '../../errror/known-error.js';
 import ProcessErrorLogger from './process-error-logger.js';
 
 export default class Aggregator {

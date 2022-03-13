@@ -4,13 +4,9 @@
   "description": "Command-line tool that enables querying of CSV data using vanilla JS",
   "main": "dist/index.js",
   "scripts": {
-    "preinstall": "npm run applyVersion && npm run build",
-    "prebuild": "npm run applyVersion",
-    "build": "tsc && rm -rf ./dist/assets/ && cp -r ./src/assets/ ./dist/assets/",
-    "applyVersion": "node -p \"'export const TOOL_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/build/version.ts",
+    "build": "tsc && copyfiles -f src/assets/* dist/assets",
     "lint": "eslint . --ext .ts",
-    "start": "node dist/index.js",
-    "postversion": "npm run applyVersion"
+    "start": "node  dist/index.js"
   },
   "type": "module",
   "keywords": [
@@ -38,6 +34,7 @@
     "@types/node": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.10.0",
     "eslint-config-google": "^0.14.0"
   }

@@ -1,14 +1,15 @@
-import CliOptions from '../cli-options.js';
-import {Aggregation} from '../data/query/aggregation/aggregation.js';
-import {Query} from '../data/query/query.js';
-import {Transformation} from '../data/query/transformation/transformation.js';
+import CliOptions from '../../cli-options.js';
+import {Aggregation} from '../../data/query/aggregation/aggregation.js';
+import {Query} from '../../data/query/query.js';
+import {Transformation} from '../../data/query/transformation/transformation.js';
 import Aggregator from './aggregator.js';
 import ProcessErrorLogger from './process-error-logger.js';
 import Transformer from './transformer.js';
 import {resolve, relative} from 'path';
-import {RunQueryOpts} from '../data/opts/run-query-opts.js';
-import {Configuration} from '../data/query/configuration/configuration.js';
-import {KnownError} from '../errror/known-error.js';
+import {RunQueryOpts} from '../../data/opts/run-query-opts.js';
+import {Configuration} from '../../data/query/configuration/configuration.js';
+import {KnownError} from '../../errror/known-error.js';
+import {existsSync, fstat} from 'fs';
 
 export default class QueryWrapper {
   private static instance: QueryWrapper;
@@ -57,10 +58,14 @@ export default class QueryWrapper {
 
   private static loadQuery = async (queryFilepath: string) => {
     let loadedQueryModule;
+    const modulePath: string = resolve(relative(process.cwd(), queryFilepath));
+    if (!existsSync(queryFilepath)) {
+      throw new KnownError(`Query ${queryFilepath} doesn't exist`);
+    }
     try {
-      const modulePath: string = resolve(relative(process.cwd(), queryFilepath));
       loadedQueryModule = await import(modulePath);
     } catch (err) {
+      console.log(err);
       throw new KnownError(`Failed to load query data from ${queryFilepath}`);
     }
     try {

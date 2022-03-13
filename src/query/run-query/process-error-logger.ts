@@ -1,9 +1,9 @@
 import {createWriteStream, WriteStream} from 'fs';
 import {join} from 'path';
-import CliOptions from '../cli-options.js';
-import {RunQueryOpts} from '../data/opts/run-query-opts.js';
-import {Debug} from '../data/query/configuration/debug.js';
-import {KnownError} from '../errror/known-error.js';
+import CliOptions from '../../cli-options.js';
+import {RunQueryOpts} from '../../data/opts/run-query-opts.js';
+import {Debug} from '../../data/query/configuration/debug.js';
+import {KnownError} from '../../errror/known-error.js';
 import Tracker from './tracker.js';
 
 export default class ProcessErrorLogger {
